@@ -29,16 +29,52 @@ public class FacePamphlet extends Program implements FacePamphletConstants {
 	public void init() {
 		createDataBase();
 		createCanvas();
+
+		Color lightGreen = new Color(144, 238, 144);
+		Color lightBlue = new Color(173, 216, 230);
+
 		JLabel nameLabel = new JLabel("Name");
 		nameField = new JTextField(TEXT_FIELD_SIZE);
+
 		JButton addButton = new JButton("Add");
+		addButton.setBackground(lightGreen);
+		addButton.setOpaque(true);
+		addButton.setBorderPainted(false);
+
 		JButton deleteButton = new JButton("Delete");
+		deleteButton.setBackground(Color.PINK);
+		deleteButton.setOpaque(true);
+		deleteButton.setBorderPainted(false);
+
 		JButton lookupButton = new JButton("Lookup");
+		lookupButton.setBackground(lightBlue);
+		lookupButton.setOpaque(true);
+		lookupButton.setBorderPainted(false);
+
 		JButton changeStatusButton = createChangeStatusOption();
+		changeStatusButton.setBackground(Color.WHITE);
+		changeStatusButton.setOpaque(true);
+		changeStatusButton.setBorderPainted(true);
+
 		JButton changePictureButton = createChangePictureOption();
+		changePictureButton.setBackground(Color.WHITE);
+		changePictureButton.setOpaque(true);
+		changePictureButton.setBorderPainted(true);
+
 		JButton addFriendButton = createAddFriendOption();
+		addFriendButton.setBackground(Color.WHITE);
+		addFriendButton.setOpaque(true);
+		addFriendButton.setBorderPainted(true);
+
+		addHobbies = new JTextField(TEXT_FIELD_SIZE);
+		addHobbies.addActionListener(this);
+		JButton hobbiesButton = new JButton("Update Hobbies");
+		hobbiesButton.setBackground(Color.WHITE);
+		hobbiesButton.setOpaque(true);
+		hobbiesButton.setBorderPainted(true);
+
 		addInteractors(nameLabel, addButton, deleteButton, lookupButton, changeStatusButton, changePictureButton,
-				addFriendButton);
+				addFriendButton, hobbiesButton);
 		addActionListeners();
 	}
 
@@ -89,7 +125,7 @@ public class FacePamphlet extends Program implements FacePamphletConstants {
 	// the window.
 
 	private void addInteractors(JLabel nameLabel, JButton addButton, JButton deleteButton, JButton lookupButton,
-			JButton changeStatusButton, JButton changePictureButton, JButton addFriendButton) {
+			JButton changeStatusButton, JButton changePictureButton, JButton addFriendButton, JButton hobbiesButton) {
 		add(nameLabel, NORTH);
 		add(nameField, NORTH);
 		add(addButton, NORTH);
@@ -103,6 +139,10 @@ public class FacePamphlet extends Program implements FacePamphletConstants {
 		add(new JLabel(EMPTY_LABEL_TEXT), WEST);
 		add(addFriendField, WEST);
 		add(addFriendButton, WEST);
+		add(new JLabel(EMPTY_LABEL_TEXT), WEST);
+		add(addHobbies, WEST);
+		add(hobbiesButton, WEST);
+
 	}
 
 	/**
@@ -120,6 +160,21 @@ public class FacePamphlet extends Program implements FacePamphletConstants {
 		changeStatusIsCalled(e);
 		changePictureIsCalled(e);
 		addFriendIsCalled(e);
+		
+		if ((e.getSource() == addHobbies || e.getActionCommand().equals("Update Hobbies"))
+				&& !addHobbies.getText().equals("")) {
+			if (currentProfile != null) {
+				currentProfile.setHobbies(addHobbies.getText());
+				canvas.displayProfile(currentProfile);
+				message = "Status updated to " + addHobbies.getText();
+				canvas.showMessage(message);
+			} else {
+				canvas.removeAllElements();
+				message = "Please, select a profile to add hobbies";
+				canvas.showMessage(message);
+			}
+		}
+
 	}
 
 	// This method reacts to the situation when the user clicks the "Add" button.
@@ -128,8 +183,16 @@ public class FacePamphlet extends Program implements FacePamphletConstants {
 		if (e.getActionCommand().equals("Add") && !nameField.getText().equals("")) {
 			if (!dataOfProfiles.containsProfile(nameField.getText())) {
 				newProfileIsCreated();
+				changeStatusField.setText("");
+				changePictureField.setText("");
+				addFriendField.setText("");
+				addHobbies.setText("");
 			} else {
 				addingExistingProfile();
+				changeStatusField.setText("");
+				changePictureField.setText("");
+				addFriendField.setText("");
+				addHobbies.setText("");
 			}
 		}
 	}
@@ -168,8 +231,16 @@ public class FacePamphlet extends Program implements FacePamphletConstants {
 			currentProfile = null;
 			if (dataOfProfiles.containsProfile(nameField.getText())) {
 				profileIsDeleted();
+				changeStatusField.setText("");
+				changePictureField.setText("");
+				addFriendField.setText("");
+				addHobbies.setText("");
 			} else {
 				deletingNonexistentProfile();
+				changeStatusField.setText("");
+				changePictureField.setText("");
+				addFriendField.setText("");
+				addHobbies.setText("");
 			}
 		}
 	}
@@ -179,7 +250,7 @@ public class FacePamphlet extends Program implements FacePamphletConstants {
 
 	private void profileIsDeleted() {
 		dataOfProfiles.deleteProfile(nameField.getText());
-		canvas.removeAll();
+		canvas.removeAllElements();
 		message = "Profile of " + nameField.getText() + " deleted";
 		canvas.showMessage(message);
 	}
@@ -189,7 +260,7 @@ public class FacePamphlet extends Program implements FacePamphletConstants {
 	// situation.
 
 	private void deletingNonexistentProfile() {
-		canvas.removeAll();
+		canvas.removeAllElements();
 		message = "A profile with the name " + nameField.getText() + " does not exist";
 		canvas.showMessage(message);
 	}
@@ -200,8 +271,16 @@ public class FacePamphlet extends Program implements FacePamphletConstants {
 		if (e.getActionCommand().equals("Lookup") && !nameField.getText().equals("")) {
 			if (dataOfProfiles.containsProfile(nameField.getText())) {
 				displayingProperProfile();
+				changeStatusField.setText("");
+				changePictureField.setText("");
+				addFriendField.setText("");
+				addHobbies.setText("");
 			} else {
 				searchingNonexistentProfile();
+				changeStatusField.setText("");
+				changePictureField.setText("");
+				addFriendField.setText("");
+				addHobbies.setText("");
 			}
 		}
 	}
@@ -222,7 +301,7 @@ public class FacePamphlet extends Program implements FacePamphletConstants {
 
 	private void searchingNonexistentProfile() {
 		currentProfile = null;
-		canvas.removeAll();
+		canvas.removeAllElements();
 		message = "A profile you are looking for with the name " + nameField.getText() + " does not exist";
 		canvas.showMessage(message);
 	}
@@ -257,7 +336,7 @@ public class FacePamphlet extends Program implements FacePamphletConstants {
 	// them about the situation.
 
 	private void profileNotChosenForStatus() {
-		canvas.removeAll();
+		canvas.removeAllElements();
 		message = "Please, select a profile to change status";
 		canvas.showMessage(message);
 	}
@@ -324,7 +403,7 @@ public class FacePamphlet extends Program implements FacePamphletConstants {
 	// the situation.
 
 	private void profileNotChosenForImage() {
-		canvas.removeAll();
+		canvas.removeAllElements();
 		message = "Please, select a profile to change picture";
 		canvas.showMessage(message);
 	}
@@ -348,7 +427,7 @@ public class FacePamphlet extends Program implements FacePamphletConstants {
 
 	private void currentProfileIsChosenForAddingFriend() {
 		if (dataOfProfiles.containsProfile(addFriendField.getText())) {
-			if (currentProfile.addFriend(addFriendField.getText())) {
+			if (!(currentProfile.getName().equals(addFriendField.getText())) && dataOfProfiles.containsProfile(addFriendField.getText()) && currentProfile.contains(addFriendField.getText())) {
 				friendAddedToProfile();
 			} else {
 				addingSameFriendAgain();
@@ -364,7 +443,31 @@ public class FacePamphlet extends Program implements FacePamphletConstants {
 	// updated and a message describing the recent action is shown.
 
 	private void friendAddedToProfile() {
+		String currentRelation = "";
+		String[] relationTypes = {"Parent", "Sibling", "Friend", "Partner", "Best Friend", "Child"};
+		JComboBox askRelation = new JComboBox(relationTypes);
+		askRelation.setEditable(true);
+		JOptionPane.showMessageDialog(null, askRelation, addFriendField.getText() + " is my...", JOptionPane.QUESTION_MESSAGE);
+		currentRelation = (String) askRelation.getSelectedItem();
+		dataOfProfiles.getProfile(currentProfile.getRelation(currentRelation));
+		dataOfProfiles.getProfile(currentProfile.getName()).addFriend(addFriendField.getText());
+		
+		if(currentRelation.equals("Parent")) {
+			currentRelation = "Child";
+		} else if(currentRelation.equals("Sibling")) {
+			currentRelation = "Sibling";
+		} else if(currentRelation.equals("Friend")) {
+			currentRelation = "Friend";
+		} else if(currentRelation.equals("Partner")) {
+			currentRelation = "Partner";
+		} else if(currentRelation.equals("Best Friend")) {
+			currentRelation = "Best Friend";
+		} else if(currentRelation.equals("Child")) {
+			currentRelation = "Parent";
+		}
+		dataOfProfiles.getProfile(addFriendField.getText()).getRelation(currentRelation);
 		dataOfProfiles.getProfile(addFriendField.getText()).addFriend(currentProfile.getName());
+		currentRelation ="";
 		canvas.displayProfile(currentProfile);
 		message = addFriendField.getText() + " added as a friend";
 		canvas.showMessage(message);
@@ -394,15 +497,16 @@ public class FacePamphlet extends Program implements FacePamphletConstants {
 	// the situation.
 
 	private void profileNotChosenForAddFriend() {
-		canvas.removeAll();
+		canvas.removeAllElements();
 		message = "Please, select a profile to add friend";
 		canvas.showMessage(message);
 	}
-	
+
 	// private instance variables:
 
 	private FacePamphletDatabase dataOfProfiles;
 	private FacePamphletCanvas canvas;
+	private JTextField addHobbies;
 	private JTextField nameField;
 	private JTextField changeStatusField;
 	private JTextField changePictureField;

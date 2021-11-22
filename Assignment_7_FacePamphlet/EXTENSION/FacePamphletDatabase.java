@@ -65,14 +65,21 @@ public class FacePamphletDatabase implements FacePamphletConstants {
 	// The job of this method is to delete a profile from the database. Also, this
 	// method deletes the profile from the friends' list of any other profiles if
 	// the deleted one was in their friends' list.
+	
+	public void getFriendsList (FacePamphletProfile profile) {
+		ArrayList<String> friendsList = profile.giveFriendsList();
+	}
 
 	public void deleteProfile(String name) {
+		int strLength = name.length();
 		Iterator<Map.Entry<String, FacePamphletProfile>> iterateThroughNames = listOfProfiles.entrySet().iterator();
 		if (listOfProfiles.containsKey(name)) {
 			while (iterateThroughNames.hasNext()) {
 				Map.Entry<String, FacePamphletProfile> profile = iterateThroughNames.next();
 				if (!profile.getKey().equals(name)) {
-					profile.getValue().removeFriend(name);
+					if(profile.getKey().substring(0, strLength - 1).equals(name)) {
+						profile.getValue().removeFriend(name);
+					}
 				}
 			}
 			listOfProfiles.remove(name);

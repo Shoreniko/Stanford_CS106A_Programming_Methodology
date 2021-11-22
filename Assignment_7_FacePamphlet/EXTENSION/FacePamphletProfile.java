@@ -88,9 +88,18 @@ public class FacePamphletProfile implements FacePamphletConstants {
 		if (friendsList.contains(friend) || profileName.equals(friend)) {
 			return false;
 		} else {
-			friendsList.add(friend);
+			friendsList.add(friend + relation);
 		}
 		return true;
+	}
+
+	public String getRelation(String currentRelation) {
+		if (!currentRelation.equals("")) {
+			relation = " (" + currentRelation + ")";
+		} else {
+			relation = currentRelation;
+		}
+		return relation;
 	}
 
 	/**
@@ -105,10 +114,20 @@ public class FacePamphletProfile implements FacePamphletConstants {
 	// their friends' list. This method returns the defauls value of false.
 
 	public boolean removeFriend(String friend) {
-		friendsList.remove(friend);
+		for(int i = 0; i < friendsList.size(); i++) {
+			int strLength = friend.length();
+			if(friendsList.get(i).substring(0, strLength - 1).equals(friend)) {
+				friendsList.remove(friend);
+			}
+		}
 		return false;
 	}
 
+	public ArrayList<String> giveFriendsList() {
+		// TODO Auto-generated method stub
+		return friendsList;
+	}
+	
 	/**
 	 * This method returns an iterator over the list of friends associated with the
 	 * profile.
@@ -136,6 +155,14 @@ public class FacePamphletProfile implements FacePamphletConstants {
 	// the program works properly or not. This method displays all the information
 	// about the current user in a user-friendly (i.e. string) form.
 
+	public boolean contains(String nameOfPossibleFriend) {
+		if(friendsList.contains(nameOfPossibleFriend)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	public String toString() {
 		String friendsToString = "";
 		for (int i = 0; i < friendsList.size(); i++) {
@@ -147,13 +174,25 @@ public class FacePamphletProfile implements FacePamphletConstants {
 		}
 		return profileName + " (" + profileStatus + "): " + friendsToString;
 	}
-	
+
+	public String setHobbies(String hobbies) {
+		hobbiesList = hobbies;
+		return hobbiesList;
+	}
+
+	public String getHobbies() {
+		return hobbiesList;
+	}
+
 	// Private instance variables:
 
+	private String relation = "";
+	private String hobbiesList = "";
 	private Iterator<String> allFriends;
 	private ArrayList<String> friendsList;
 	private GImage profileImage = null;
 	private String profileName;
 	private String profileStatus = "";
+
 
 }

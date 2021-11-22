@@ -18,7 +18,16 @@ public class FacePamphletCanvas extends GCanvas implements FacePamphletConstants
 	 * display
 	 */
 	public FacePamphletCanvas() {
-
+		background = new GImage("background.jpg");
+		background.setBounds(0, 0, APPLICATION_WIDTH, APPLICATION_HEIGHT);
+		add(background);
+	}
+	
+	public void removeAllElements() {
+		removeAll();
+		background = new GImage("background.jpg");
+		background.setBounds(0, 0, APPLICATION_WIDTH, APPLICATION_HEIGHT);
+		add(background);
 	}
 
 	/**
@@ -50,9 +59,25 @@ public class FacePamphletCanvas extends GCanvas implements FacePamphletConstants
 
 	public void displayProfile(FacePamphletProfile profile) {
 		removeAll();
+		add(background);
 		GLabel nameLabel = addNameLabel(profile);
 		displayingTheImage(profile, nameLabel);
 		displayingTheStatus(profile, nameLabel);
+		
+		if (profile.getHobbies().equals("")) {
+			GLabel emptyHobbyLabel = new GLabel("No hobbies yet");
+			emptyHobbyLabel.setFont(PROFILE_STATUS_FONT);
+			emptyHobbyLabel.setLocation(LEFT_MARGIN, TOP_MARGIN + IMAGE_MARGIN + nameLabel.getAscent() + IMAGE_HEIGHT
+					+ STATUS_MARGIN + emptyHobbyLabel.getAscent() + 20);
+			add(emptyHobbyLabel);
+		} else {
+			GLabel hobbyLabel = new GLabel(profile.getName() + "'s hobbies are: " + profile.getHobbies());
+			hobbyLabel.setFont(PROFILE_STATUS_FONT);
+			hobbyLabel.setLocation(LEFT_MARGIN, TOP_MARGIN + IMAGE_MARGIN + nameLabel.getAscent() + IMAGE_HEIGHT
+					+ STATUS_MARGIN + hobbyLabel.getAscent() + 20);
+			add(hobbyLabel);
+		}
+		
 		GLabel friendsLabel = addFriendsLabel(nameLabel);
 		displayingFriendsList(profile, nameLabel, friendsLabel);
 	}
@@ -72,29 +97,13 @@ public class FacePamphletCanvas extends GCanvas implements FacePamphletConstants
 
 	private void displayingTheImage(FacePamphletProfile profile, GLabel nameLabel) {
 		if (profile.getImage() == null) {
-			addImageBorder(nameLabel);
-			addNoImageLabel(nameLabel);
+			GImage defaultImage = new GImage("default_user.jpg");
+			defaultImage.setBounds(LEFT_MARGIN, TOP_MARGIN + nameLabel.getAscent() + IMAGE_MARGIN, IMAGE_WIDTH,
+				IMAGE_HEIGHT);
+			add(defaultImage);
 		} else {
 			addProfileImage(profile, nameLabel);
 		}
-	}
-
-	// If there is no image, the image border is displayed.
-
-	private void addImageBorder(GLabel nameLabel) {
-		GRect imageBorder = new GRect(IMAGE_WIDTH, IMAGE_HEIGHT);
-		imageBorder.setLocation(LEFT_MARGIN, TOP_MARGIN + nameLabel.getAscent() + IMAGE_MARGIN);
-		add(imageBorder);
-	}
-
-	// If there is no image, "No Image" label is displayed.
-
-	private void addNoImageLabel(GLabel nameLabel) {
-		GLabel imageLabel = new GLabel("No Image");
-		imageLabel.setFont(PROFILE_IMAGE_FONT);
-		imageLabel.setLocation((IMAGE_WIDTH - imageLabel.getWidth()) / 2 + LEFT_MARGIN,
-				IMAGE_HEIGHT / 2 + TOP_MARGIN + nameLabel.getHeight() + IMAGE_MARGIN);
-		add(imageLabel);
 	}
 
 	// This method adds a real image to the canvas.
@@ -167,6 +176,7 @@ public class FacePamphletCanvas extends GCanvas implements FacePamphletConstants
 
 	// private instance variable:
 
+	private GImage background;
 	private GLabel messageLabel;
 
 }
